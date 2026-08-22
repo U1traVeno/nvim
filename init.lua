@@ -18,4 +18,4 @@ require('plugins')
 -- Language servers. Binaries come from Home Manager and are already on PATH,
 -- so there is no Mason-style installer here. Each name below resolves to
 -- lsp/<name>.lua in this directory.
-vim.lsp.enable({ 'gopls', 'rust_analyzer', 'ty' })
+vim.lsp.enable({ 'gopls', 'rust_analyzer', 'ty', 'ruff' })

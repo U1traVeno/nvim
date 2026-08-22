@@ -25,6 +25,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
       buffer = event.buf,
       desc = 'vim.lsp.buf.definition()',
     })
+
+    -- Formatting comes from the language servers, so there is no separate
+    -- formatter plugin: gopls and rust-analyzer format their own languages,
+    -- and ruff formats Python because ty only does type checking.
+    map({ 'n', 'v' }, '<leader>cf', function()
+      vim.lsp.buf.format({ async = true })
+    end, {
+      buffer = event.buf,
+      desc = 'Format buffer',
+    })
   end,
 })
 
