@@ -27,6 +27,7 @@ vim.pack.add({
   { src = 'https://github.com/nvim-mini/mini.icons' },
   { src = 'https://github.com/nvim-mini/mini.tabline' },
   { src = 'https://github.com/nvim-mini/mini.surround' },
+  { src = 'https://github.com/nvim-mini/mini.ai' },
   { src = 'https://github.com/stevearc/oil.nvim' },
 })
 
@@ -42,3 +43,4 @@ require('plugins.filetree')
 require('plugins.oil')
 require('plugins.tabline')
 require('plugins.surround')
+require('plugins.textobjects')

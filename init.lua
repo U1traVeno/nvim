@@ -14,6 +14,7 @@ vim.g.maplocalleader = ' '
 require('options')
 require('keymaps')
 require('plugins')
+require('colors')
 
 -- Language servers. Binaries come from Home Manager and are already on PATH,
 -- so there is no Mason-style installer here. Each name below resolves to

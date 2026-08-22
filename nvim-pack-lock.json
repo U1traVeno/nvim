@@ -13,6 +13,10 @@
       "rev": "5be654f2232c10ddcad19c1607a67b6b4b78fc29",
       "src": "https://github.com/lewis6991/gitsigns.nvim"
     },
+    "mini.ai": {
+      "rev": "25248c6aa002391936a6200f12d1466015987133",
+      "src": "https://github.com/nvim-mini/mini.ai"
+    },
     "mini.icons": {
       "rev": "98faae31e9be1cc054ae63485e58ceb185efcad0",
       "src": "https://github.com/nvim-mini/mini.icons"
