@@ -10,6 +10,20 @@
 -- Directory hijacking is left to oil, so `nvim some/dir` still opens the
 -- editable directory buffer and the tree stays purely a sidebar.
 
+-- Git status is rendered the way lazygit does it, so the two tools agree.
+-- lazygit's formatFileStatus prints the git porcelain XY code and colours the
+-- index column green, the worktree column with unstagedChangesColor (red by
+-- default), and an untracked '?' red in both columns.
+local git_glyphs = {
+  staged = 'M', -- index column: a change that is ready to commit
+  renamed = 'R',
+  untracked = '?',
+  unstaged = 'M', -- worktree column: a change that is not staged yet
+  deleted = 'D',
+  unmerged = 'U',
+  ignored = '◌',
+}
+
 require('nvim-tree').setup({
   hijack_directories = {
     enable = false,
@@ -23,6 +37,19 @@ require('nvim-tree').setup({
     -- overflows the sidebar in a nested checkout. Show only the final
     -- component, so `nvim .` in derivon-core is labelled "derivon-core".
     root_folder_label = ':t',
+    icons = {
+      glyphs = {
+        git = git_glyphs,
+      },
+    },
+  },
+  filters = {
+    -- Entries are vim regexes, tested against both the path relative to the
+    -- cwd and the basename. See the notes at the bottom of this file.
+    custom = {
+      '^\\.git$',
+      '^\\.DS_Store$',
+    },
   },
   actions = {
     open_file = {
@@ -33,6 +60,51 @@ require('nvim-tree').setup({
   },
 })
 
+-- nvim-tree links its git highlights to generic syntax groups (Statement,
+-- PreProc, Constant), which makes every state look alike. Repoint them at the
+-- terminal's own red and green so the colours match lazygit running in the
+-- same terminal. Reapplied on ColorScheme because loading a scheme clears
+-- non-default highlights.
+local function apply_git_highlights()
+  local red = vim.g.terminal_color_1 or '#e06c75'
+  local green = vim.g.terminal_color_2 or '#98c379'
+
+  local groups = {
+    NvimTreeGitStagedIcon = { fg = green, ctermfg = 2 },
+    NvimTreeGitRenamedIcon = { fg = green, ctermfg = 2 },
+    NvimTreeGitDirtyIcon = { fg = red, ctermfg = 1 },
+    NvimTreeGitNewIcon = { fg = red, ctermfg = 1 },
+    NvimTreeGitDeletedIcon = { fg = red, ctermfg = 1 },
+    NvimTreeGitMergeIcon = { fg = red, ctermfg = 1 },
+    NvimTreeGitIgnoredIcon = { link = 'Comment' },
+  }
+
+  for group, opts in pairs(groups) do
+    vim.api.nvim_set_hl(0, group, opts)
+  end
+end
+
+apply_git_highlights()
+
+vim.api.nvim_create_autocmd('ColorScheme', {
+  desc = 'Keep nvim-tree git colours matching lazygit',
+  callback = apply_git_highlights,
+})
+
 vim.keymap.set('n', '<leader>e', function()
   require('nvim-tree.api').tree.toggle({ find_file = true })
 end, { desc = 'Toggle file tree' })
+
+-- Hiding entries
+-- --------------
+-- filters.git_ignored  (default true)  hide anything .gitignore covers
+-- filters.dotfiles     (default false) hide every dotfile at once
+-- filters.custom       vim regexes, matched against the cwd-relative path and
+--                      the basename; "*.ext" is also accepted as a suffix rule
+-- filters.exclude      lua patterns that force an entry to stay visible even
+--                      when another filter would hide it
+--
+-- Toggle at runtime without editing this file:
+--   I  toggle filters.git_ignored
+--   H  toggle filters.dotfiles
+--   U  toggle filters.custom
