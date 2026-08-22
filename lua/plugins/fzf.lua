@@ -24,6 +24,9 @@ map('n', '<leader>fh', fzf.helptags, { desc = 'Find help tags' })
 map('n', '<leader>fd', fzf.diagnostics_workspace, { desc = 'Find diagnostics' })
 map('n', '<leader>fr', fzf.resume, { desc = 'Resume last picker' })
 
+-- Jump to any symbol in the project by name. gO only covers the current file.
+map('n', '<leader>fs', fzf.lsp_live_workspace_symbols, { desc = 'Find symbol in project' })
+
 -- Grep for the word under the cursor.
 map('n', '<leader>f*', fzf.grep_cword, { desc = 'Grep word under cursor' })
 

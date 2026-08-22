@@ -35,6 +35,22 @@ vim.api.nvim_create_autocmd('LspAttach', {
       buffer = event.buf,
       desc = 'Format buffer',
     })
+
+    -- Inlay hints answer "what type is this" without moving the cursor or
+    -- opening a float. They are noisy on dense lines, so they are also on a
+    -- toggle.
+    local client = vim.lsp.get_client_by_id(event.data.client_id)
+    if client and client:supports_method('textDocument/inlayHint') then
+      vim.lsp.inlay_hint.enable(true, { bufnr = event.buf })
+
+      map('n', '<leader>ch', function()
+        local enabled = vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf })
+        vim.lsp.inlay_hint.enable(not enabled, { bufnr = event.buf })
+      end, {
+        buffer = event.buf,
+        desc = 'Toggle inlay hints',
+      })
+    end
   end,
 })
 
