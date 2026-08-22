@@ -11,13 +11,16 @@ require('blink.cmp').setup({
   --   <C-b>/<C-f> scroll docs   <Tab>/<S-Tab> jump between snippet slots
   --
   -- The preset opens the menu with <C-space>, which never reaches Neovim here
-  -- because tmux claims C-Space as its prefix. Moved to <C-CR>, which the
-  -- terminal can encode distinctly from <CR> thanks to tmux's
-  -- `extended-keys on` with the csi-u format.
+  -- because tmux claims C-Space as its prefix.
+  --
+  -- <C-CR> was tried first and does not work: Ctrl-V Ctrl-Enter shows ^M, so
+  -- the terminal collapses it to a plain carriage return and the mapping never
+  -- fires. <C-l> needs no extended-key negotiation and Neovim leaves it unused
+  -- in insert mode.
   keymap = {
     preset = 'default',
     ['<C-space>'] = false,
-    ['<C-CR>'] = { 'show', 'show_documentation', 'hide_documentation' },
+    ['<C-l>'] = { 'show', 'show_documentation', 'hide_documentation' },
   },
 
   appearance = {
