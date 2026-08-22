@@ -23,6 +23,7 @@ vim.pack.add({
   { src = 'https://github.com/ibhagwan/fzf-lua' },
   { src = 'https://github.com/nvim-tree/nvim-tree.lua' },
   { src = 'https://github.com/nvim-mini/mini.icons' },
+  { src = 'https://github.com/nvim-mini/mini.tabline' },
   { src = 'https://github.com/stevearc/oil.nvim' },
 })
 
@@ -35,3 +36,4 @@ require('plugins.completion')
 require('plugins.fzf')
 require('plugins.filetree')
 require('plugins.oil')
+require('plugins.tabline')
