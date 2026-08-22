@@ -23,6 +23,7 @@ vim.pack.add({
   { src = 'https://github.com/nvim-treesitter/nvim-treesitter-context' },
   { src = 'https://github.com/ibhagwan/fzf-lua' },
   { src = 'https://github.com/lewis6991/gitsigns.nvim' },
+  { src = 'https://github.com/mfussenegger/nvim-dap' },
   { src = 'https://github.com/nvim-tree/nvim-tree.lua' },
   { src = 'https://github.com/nvim-mini/mini.icons' },
   { src = 'https://github.com/nvim-mini/mini.tabline' },
@@ -39,6 +40,7 @@ require('plugins.context')
 require('plugins.completion')
 require('plugins.fzf')
 require('plugins.git')
+require('plugins.debug')
 require('plugins.filetree')
 require('plugins.oil')
 require('plugins.tabline')
