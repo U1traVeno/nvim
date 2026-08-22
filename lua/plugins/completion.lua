@@ -17,16 +17,18 @@ require('blink.cmp').setup({
   -- the terminal collapses it to a plain carriage return and the mapping never
   -- fires. <C-l> needs no extended-key negotiation and Neovim leaves it unused
   -- in insert mode.
-  -- The preset bundles menu and documentation onto one key as a chain, and the
-  -- chain stops at the first command that runs. Since the menu auto-triggers
-  -- while typing, `show` almost never gets its turn and the key only ever
-  -- toggles the docs. One job per key instead.
+  -- The preset chains show, show_documentation and hide_documentation onto one
+  -- key and stops at the first command that runs. The menu auto-triggers while
+  -- typing, so `show` never got its turn and the key acted as a docs toggle.
+  --
+  -- There is no separate documentation key on purpose: docs already appear on
+  -- their own, <C-b> and <C-f> scroll them, and <C-l> takes the menu and its
+  -- docs down together.
   keymap = {
     preset = 'default',
     ['<C-space>'] = false,
     -- hide first, so the pair acts as a real toggle.
     ['<C-l>'] = { 'hide', 'show' },
-    ['<C-q>'] = { 'show_documentation', 'hide_documentation' },
   },
 
   appearance = {
