@@ -24,7 +24,35 @@ local git_glyphs = {
   ignored = '◌',
 }
 
+-- Buffer-local keys inside the tree. Defaults are kept, then the navigation
+-- keys are pointed at the vim directions: l descends, h ascends.
+--
+-- <Space> is also the leader key. nvim-tree binds its keys with nowait, so a
+-- bare <Space> mapping fires immediately and leader sequences stop working
+-- while the cursor is in the tree. That is the intended trade here: <Space> is
+-- wanted as a toggle, and q already closes the tree.
+local function on_attach(bufnr)
+  local api = require('nvim-tree.api')
+
+  api.config.mappings.default_on_attach(bufnr)
+
+  local function opts(desc)
+    return {
+      desc = 'nvim-tree: ' .. desc,
+      buffer = bufnr,
+      noremap = true,
+      silent = true,
+      nowait = true,
+    }
+  end
+
+  vim.keymap.set('n', 'l', api.tree.change_root_to_node, opts('CD'))
+  vim.keymap.set('n', 'h', api.tree.change_root_to_parent, opts('Up'))
+  vim.keymap.set('n', '<Space>', api.node.open.edit, opts('Open'))
+end
+
 require('nvim-tree').setup({
+  on_attach = on_attach,
   hijack_directories = {
     enable = false,
   },
