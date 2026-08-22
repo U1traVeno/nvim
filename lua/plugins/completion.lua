@@ -21,14 +21,15 @@ require('blink.cmp').setup({
   -- key and stops at the first command that runs. The menu auto-triggers while
   -- typing, so `show` never got its turn and the key acted as a docs toggle.
   --
-  -- There is no separate documentation key on purpose: docs already appear on
-  -- their own, <C-b> and <C-f> scroll them, and <C-l> takes the menu and its
-  -- docs down together.
+  -- <C-d> for documentation is worth the one thing it costs: Neovim's
+  -- insert-mode <C-d> dedents by a shiftwidth, which is redundant here given
+  -- gofmt and rustfmt on <leader>cf.
   keymap = {
     preset = 'default',
     ['<C-space>'] = false,
-    -- hide first, so the pair acts as a real toggle.
+    -- hide first in each pair, so both act as real toggles.
     ['<C-l>'] = { 'hide', 'show' },
+    ['<C-d>'] = { 'hide_documentation', 'show_documentation' },
   },
 
   appearance = {
@@ -37,8 +38,11 @@ require('blink.cmp').setup({
 
   completion = {
     documentation = {
-      auto_show = true,
-      auto_show_delay_ms = 200,
+      -- Upstream's default, restored. Auto-showing was a mistake here: the doc
+      -- window wants 50 columns beside the menu, and when the split is not
+      -- that wide it falls back to sitting above or below, which buries the
+      -- code being written. On demand with <C-d> instead.
+      auto_show = false,
     },
   },
 
