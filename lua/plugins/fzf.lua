@@ -26,3 +26,10 @@ map('n', '<leader>fr', fzf.resume, { desc = 'Resume last picker' })
 
 -- Grep for the word under the cursor.
 map('n', '<leader>f*', fzf.grep_cword, { desc = 'Grep word under cursor' })
+
+-- Searchable list of every mapping, mirroring the g? that nvim-tree and oil
+-- already provide for their own buffers. Those are buffer-local and still win
+-- inside their windows, so this only fills in everywhere else.
+--
+-- g? is Vim's rot13 operator, which is not worth keeping.
+map('n', 'g?', fzf.keymaps, { desc = 'Find keymaps' })
