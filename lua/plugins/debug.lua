@@ -1,16 +1,21 @@
--- nvim-dap. Neovim has no built-in debug adapter client, so this is the one
--- piece that cannot come from core.
+-- nvim-dap plus the two companions almost everyone pairs it with.
 --
--- Only the core plugin is installed. nvim-dap-ui would pull in nvim-nio as
--- well; nvim-dap already ships a REPL and hover widgets, which is enough to
--- start with.
+-- Neovim has no built-in debug adapter client, so unlike LSP, formatting and
+-- completion this cannot come from core.
+--
+--   nvim-dap                  the client
+--   nvim-dap-ui               scopes, stacks, breakpoints, watches, console
+--   nvim-nio                  required by nvim-dap-ui; vim.pack does not
+--                             resolve dependencies, so it is declared by hand
+--   nvim-dap-virtual-text     values shown inline next to the code
 --
 -- Adapters are external programs, and both are already on this machine:
 --   Go    dlv, from modules/packages/golang.nix
 --   Rust  lldb-dap, from the Xcode Command Line Tools
--- Python would need debugpy, which is not installed, so it is left out.
+-- Python would need debugpy, which is not installed.
 
 local dap = require('dap')
+local dapui = require('dapui')
 
 -- ------------------------------------------------------------------ adapters
 
@@ -94,6 +99,30 @@ dap.configurations.rust = {
   },
 }
 
+-- ------------------------------------------------------------------------ ui
+
+dapui.setup()
+
+require('nvim-dap-virtual-text').setup({
+  -- The default on Neovim 0.10+ is 'inline', which splices the value between
+  -- the identifier and the rest of the statement and reads as
+  -- `total = 15 := 0`. End of line keeps the source intact; the Scopes panel
+  -- is there when per-variable precision is wanted.
+  virt_text_pos = 'eol',
+})
+
+-- Open the panels when a session starts and close them when it ends, so
+-- "is it running" is answered by the screen rather than by guessing.
+dap.listeners.after.event_initialized['dapui'] = function()
+  dapui.open()
+end
+dap.listeners.before.event_terminated['dapui'] = function()
+  dapui.close()
+end
+dap.listeners.before.event_exited['dapui'] = function()
+  dapui.close()
+end
+
 -- ---------------------------------------------------------------- appearance
 
 vim.fn.sign_define('DapBreakpoint', { text = '●', texthl = 'DiagnosticError' })
@@ -117,15 +146,11 @@ map('n', '<leader>dc', dap.continue, { desc = 'Continue / start' })
 map('n', '<leader>di', dap.step_into, { desc = 'Step into' })
 map('n', '<leader>do', dap.step_over, { desc = 'Step over' })
 map('n', '<leader>dO', dap.step_out, { desc = 'Step out' })
-map('n', '<leader>dr', dap.repl.toggle, { desc = 'Toggle REPL' })
 map('n', '<leader>dt', dap.terminate, { desc = 'Terminate' })
 
--- Inspect whatever is under the cursor while stopped.
+-- Panels. dapui.eval opens a floating window; pressing the key again focuses
+-- it, and q closes it, which the bare dap.ui.widgets hover did not offer.
+map('n', '<leader>du', dapui.toggle, { desc = 'Toggle debug panels' })
 map({ 'n', 'v' }, '<leader>dh', function()
-  require('dap.ui.widgets').hover()
+  dapui.eval(nil, { enter = true })
 end, { desc = 'Inspect value' })
-
-map('n', '<leader>ds', function()
-  local widgets = require('dap.ui.widgets')
-  widgets.centered_float(widgets.scopes)
-end, { desc = 'Scopes' })

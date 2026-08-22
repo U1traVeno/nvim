@@ -24,6 +24,10 @@ vim.pack.add({
   { src = 'https://github.com/ibhagwan/fzf-lua' },
   { src = 'https://github.com/lewis6991/gitsigns.nvim' },
   { src = 'https://github.com/mfussenegger/nvim-dap' },
+  -- nvim-dap-ui needs nvim-nio, and vim.pack resolves no dependencies.
+  { src = 'https://github.com/nvim-neotest/nvim-nio' },
+  { src = 'https://github.com/rcarriga/nvim-dap-ui' },
+  { src = 'https://github.com/theHamsta/nvim-dap-virtual-text' },
   { src = 'https://github.com/nvim-tree/nvim-tree.lua' },
   { src = 'https://github.com/nvim-mini/mini.icons' },
   { src = 'https://github.com/nvim-mini/mini.tabline' },
