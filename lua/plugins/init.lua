@@ -31,6 +31,7 @@ vim.pack.add({
   { src = 'https://github.com/nvim-tree/nvim-tree.lua' },
   { src = 'https://github.com/nvim-mini/mini.icons' },
   { src = 'https://github.com/nvim-mini/mini.tabline' },
+  { src = 'https://github.com/nvim-mini/mini.statusline' },
   { src = 'https://github.com/nvim-mini/mini.surround' },
   { src = 'https://github.com/nvim-mini/mini.ai' },
   { src = 'https://github.com/stevearc/oil.nvim' },
@@ -48,5 +49,6 @@ require('plugins.debug')
 require('plugins.filetree')
 require('plugins.oil')
 require('plugins.tabline')
+require('plugins.statusline')
 require('plugins.surround')
 require('plugins.textobjects')

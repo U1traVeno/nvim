@@ -21,6 +21,10 @@
       "rev": "98faae31e9be1cc054ae63485e58ceb185efcad0",
       "src": "https://github.com/nvim-mini/mini.icons"
     },
+    "mini.statusline": {
+      "rev": "127997ebef7ef632161203b960c5ef9d158f4810",
+      "src": "https://github.com/nvim-mini/mini.statusline"
+    },
     "mini.surround": {
       "rev": "8d5d0c5aa92449368ac251e85451d79d8f69d296",
       "src": "https://github.com/nvim-mini/mini.surround"
