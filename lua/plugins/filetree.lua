@@ -57,8 +57,23 @@ require('nvim-tree').setup({
   view = {
     width = 36,
   },
+  diagnostics = {
+    enable = true,
+    -- Mark the containing folders too, so a problem is visible without
+    -- expanding the tree to find it.
+    show_on_dirs = true,
+    show_on_open_dirs = true,
+    -- Hints are routine in Rust and Go and would end up colouring most of the
+    -- tree. Only warnings and errors mean "look here".
+    severity = {
+      min = vim.diagnostic.severity.WARN,
+      max = vim.diagnostic.severity.ERROR,
+    },
+  },
   renderer = {
     group_empty = true,
+    -- Colour the name itself, not just add an icon.
+    highlight_diagnostics = 'name',
     -- Default is ":~:s?$?/..?", which spells out the whole path from $HOME and
     -- overflows the sidebar in a nested checkout. Show only the final
     -- component, so `nvim .` in derivon-core is labelled "derivon-core".
@@ -91,6 +106,27 @@ require('nvim-tree').setup({
 -- terminal's own red and green so the colours match lazygit running in the
 -- same terminal. Reapplied on ColorScheme because loading a scheme clears
 -- non-default highlights.
+-- nvim-tree points the diagnostic name highlights at DiagnosticUnderline*,
+-- which carry underline plus a `sp` colour and no `fg`, so a bad file gets
+-- underlined rather than recoloured. Point them at the groups that actually
+-- set a foreground.
+local function apply_diagnostic_highlights()
+  local groups = {
+    NvimTreeDiagnosticErrorFileHL = 'DiagnosticError',
+    NvimTreeDiagnosticWarnFileHL = 'DiagnosticWarn',
+    NvimTreeDiagnosticInfoFileHL = 'DiagnosticInfo',
+    NvimTreeDiagnosticHintFileHL = 'DiagnosticHint',
+    NvimTreeDiagnosticErrorFolderHL = 'DiagnosticError',
+    NvimTreeDiagnosticWarnFolderHL = 'DiagnosticWarn',
+    NvimTreeDiagnosticInfoFolderHL = 'DiagnosticInfo',
+    NvimTreeDiagnosticHintFolderHL = 'DiagnosticHint',
+  }
+
+  for group, target in pairs(groups) do
+    vim.api.nvim_set_hl(0, group, { link = target })
+  end
+end
+
 local function apply_git_highlights()
   local red = vim.g.terminal_color_1 or '#e06c75'
   local green = vim.g.terminal_color_2 or '#98c379'
@@ -111,10 +147,14 @@ local function apply_git_highlights()
 end
 
 apply_git_highlights()
+apply_diagnostic_highlights()
 
 vim.api.nvim_create_autocmd('ColorScheme', {
-  desc = 'Keep nvim-tree git colours matching lazygit',
-  callback = apply_git_highlights,
+  desc = 'Keep nvim-tree git and diagnostic colours after a scheme loads',
+  callback = function()
+    apply_git_highlights()
+    apply_diagnostic_highlights()
+  end,
 })
 
 vim.keymap.set('n', '<leader>e', function()
